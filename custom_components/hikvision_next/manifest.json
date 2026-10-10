@@ -1,7 +1,7 @@
 {
   "domain": "hikvision_next",
   "name": "Hikvision NVR / IP Camera",
-  "after_dependencies": ["http", "network"],
+  "after_dependencies": ["http", "media_source", "network", "stream"],
   "codeowners": ["@maciej-or"],
   "config_flow": true,
   "dependencies": [],
@@ -13,5 +13,5 @@
     "xmltodict>=0.13.0",
     "requests-toolbelt==1.0.0"
   ],
-  "version": "1.1.1-wujad1"
+  "version": "1.1.1-wujad2"
 }

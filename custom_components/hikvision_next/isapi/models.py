@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+import datetime
 
 
 @dataclass
@@ -135,3 +136,12 @@ class ProtocolsInfo:
     """Holds info of supported protocols."""
 
     rtsp_port: int = 554
+
+
+@dataclass
+class RecordingSegment:
+    """Holds a video segment recorded on the device storage (times in UTC)."""
+
+    track_id: int
+    start: datetime.datetime
+    end: datetime.datetime
