@@ -173,9 +173,25 @@ class HikvisionMediaSource(MediaSource):
         """Return the camera name as shown in Home Assistant, falling back to the device channel name."""
         registry = dr.async_get(self.hass)
         for serial_no in (camera.serial_no, device.device_info.serial_no):
-            if serial_no and (device_entry := registry.async_get_device(identifiers={(DOMAIN, serial_no)})):
+            if serial_no and (device_entry := self._registry_device(registry, device, (DOMAIN, serial_no))):
                 return device_entry.name_by_user or device_entry.name or camera.name
         return camera.name
+
+    @staticmethod
+    def _registry_device(
+        registry: dr.DeviceRegistry, device: HikvisionDevice, identifier: tuple[str, str]
+    ) -> dr.DeviceEntry | None:
+        """Look up a device of this config entry.
+
+        Home Assistant 2026.9 deprecated `async_get_device` (it stops working in 2027.8),
+        as identifiers are no longer unique across config entries, in favour of
+        `async_get_device_by_identifier`, which older cores do not have.
+        """
+        if hasattr(registry, "async_get_device_by_identifier"):
+            if not device.entry:
+                return None
+            return registry.async_get_device_by_identifier(identifier, device.entry.entry_id)
+        return registry.async_get_device(identifiers={identifier})
 
     def _event_title(self, events: list[LoggedEvent]) -> str:
         """Return comma separated event type labels."""
